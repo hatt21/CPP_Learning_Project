@@ -20,7 +20,7 @@ public:
     Terminal(const Point3D& pos_) : pos { pos_ } {}
 
     bool in_use() const { return current_aircraft != nullptr; }
-    bool is_servicing() const { return service_progress < SERVICE_CYCLES * 2; }
+    bool is_servicing() const { return service_progress < SERVICE_CYCLES; }
     void assign_craft(const Aircraft& aircraft) { current_aircraft = &aircraft; }
 
     void start_service(const Aircraft& aircraft)
@@ -39,12 +39,11 @@ public:
         }
     }
 
-    bool move() override
+    void move() override
     {
         if (in_use() && is_servicing())
         {
             ++service_progress;
         }
-        return true;
     }
 };
