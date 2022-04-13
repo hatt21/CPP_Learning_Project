@@ -5,7 +5,8 @@ std::unique_ptr<Aircraft> AircraftFactory::create_aircraft(Airport& airport, con
     assert(&airport); // make sure the airport is initialized before creating aircraft
     assert(&type);
 
-    std::string flight_number = airlines[std::rand() % 8] + std::to_string(1000 + (rand() % 9000));
+    int num_airline           = std::rand() % 8;
+    std::string flight_number = airlines[num_airline] + std::to_string(1000 + (rand() % 9000));
     while (flight_numbers.find(flight_number) != flight_numbers.end())
     {
         flight_number = airlines[std::rand() % 8] + std::to_string(1000 + (rand() % 9000));
@@ -15,7 +16,8 @@ std::unique_ptr<Aircraft> AircraftFactory::create_aircraft(Airport& airport, con
     const Point3D start     = Point3D { std::sin(angle), std::cos(angle), 0 } * 3 + Point3D { 0, 0, 2 };
     const Point3D direction = (-start).normalize();
 
-    return std::make_unique<Aircraft>(type, flight_number, start, direction, *(&airport.get_tower()));
+    return std::make_unique<Aircraft>(type, flight_number, start, direction, *(&airport.get_tower()),
+                                      num_airline);
 }
 
 std::unique_ptr<Aircraft> AircraftFactory::create_random_aircraft(Airport& airport)

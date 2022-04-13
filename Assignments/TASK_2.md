@@ -7,6 +7,8 @@
 `TowerSimulation::display_help()` est chargé de l'affichage des touches disponibles.
 Dans sa boucle, remplacez `const auto& ks_pair` par un structured binding adapté.
 
+# on peut remplacer ks_pair par [first,second] pour récupérer directement les clés et valeurs associées dans first et second. On écrira donc         "std::cout << first << ' ';" et pas "std::cout << ks_pair.first << ' ';"
+
 Si vous ne savez plus ce qu'est un structured binding, le [chapitre 6](https://laefy.github.io/CPP_Learning/chapter6/1-searches/) est votre ami (Google aussi d'ailleurs).
 
 ### B - Algorithmes divers
