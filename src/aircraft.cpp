@@ -104,6 +104,14 @@ bool Aircraft::move()
         turn_to_waypoint();
         // move in the direction of the current speed
         pos += speed;
+        if (is_circling() && !has_landed)
+        {
+            auto waypoint = control.reserve_terminal(*this);
+            if (!waypoint.empty())
+            {
+                waypoints.swap(waypoint);
+            }
+        }
 
         // if we are close to our next waypoint, stike if off the list
         if (!waypoints.empty() && distance_to(waypoints.front()) < DISTANCE_THRESHOLD)
@@ -135,6 +143,14 @@ bool Aircraft::move()
             {
                 pos.z() -= SINK_FACTOR * (SPEED_THRESHOLD - speed_len);
             }
+            if (fuel > 0)
+            {
+                fuel--;
+            }
+            if (fuel == 0)
+            {
+                std::cout << flight_number << " crashed!" << std::endl;
+            }
         }
 
         // update the z-value of the displayable structure
@@ -146,4 +162,24 @@ bool Aircraft::move()
 void Aircraft::display() const
 {
     type.texture.draw(project_2D(pos), { PLANE_TEXTURE_DIM, PLANE_TEXTURE_DIM }, get_speed_octant());
+}
+
+bool Aircraft::has_terminal() const
+{
+    auto& reserved_terminals = control.get_reserved_terminals();
+    if (reserved_terminals.find(this) != reserved_terminals.end())
+    {
+        return true;
+    }
+    return false;
+}
+
+bool Aircraft::is_circling() const
+{
+    return !has_terminal();
+}
+
+bool Aircraft::is_low_on_fuel() const
+{
+    return fuel < 200;
 }

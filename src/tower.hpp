@@ -30,4 +30,6 @@ public:
     // produce instructions for aircraft
     WaypointQueue get_instructions(Aircraft& aircraft);
     void arrived_at_terminal(const Aircraft& aircraft);
+    const AircraftToTerminal& get_reserved_terminals() const { return reserved_terminals; }
+    WaypointQueue reserve_terminal(Aircraft& aircraft);
 };

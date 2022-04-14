@@ -6,6 +6,7 @@ std::unique_ptr<Aircraft> AircraftFactory::create_aircraft(Airport& airport, con
     assert(&type);
 
     int num_airline           = std::rand() % 8;
+    int fuel                  = 150 + std::rand() % 2851;
     std::string flight_number = airlines[num_airline] + std::to_string(1000 + (rand() % 9000));
     while (flight_numbers.find(flight_number) != flight_numbers.end())
     {
@@ -17,7 +18,7 @@ std::unique_ptr<Aircraft> AircraftFactory::create_aircraft(Airport& airport, con
     const Point3D direction = (-start).normalize();
 
     return std::make_unique<Aircraft>(type, flight_number, start, direction, *(&airport.get_tower()),
-                                      num_airline);
+                                      num_airline, fuel);
 }
 
 std::unique_ptr<Aircraft> AircraftFactory::create_random_aircraft(Airport& airport)

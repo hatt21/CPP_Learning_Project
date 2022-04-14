@@ -2,8 +2,22 @@
 
 void AircraftManager::move()
 {
+    std::sort(aircrafts.begin(), aircrafts.end(),
+              [](auto& a, auto& b)
+              {
+                  if (!a->has_terminal() && b->has_terminal())
+                  {
+                      return false;
+                  }
+                  if (a->has_terminal() && !b->has_terminal())
+                  {
+                      return true;
+                  }
+                  return a->get_fuel() < b->get_fuel();
+              });
     aircrafts.erase(std::remove_if(aircrafts.begin(), aircrafts.end(),
-                                   [](const auto& aircraft) { return !(aircraft)->move(); }),
+                                   [](const auto& aircraft)
+                                   { return !aircraft->move() || aircraft->get_fuel() == 0; }),
                     aircrafts.end());
 }
 

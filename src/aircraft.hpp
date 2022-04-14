@@ -22,6 +22,7 @@ private:
     bool is_at_terminal        = false;
     bool has_landed            = false;
     int num_airline;
+    int fuel;
 
     // turn the aircraft to arrive at the next waypoint
     // try to facilitate reaching the waypoint after the next by facing the
@@ -48,24 +49,28 @@ private:
 
 public:
     Aircraft(const AircraftType& type_, const std::string_view& flight_number_, const Point3D& pos_,
-             const Point3D& speed_, Tower& control_, int num_airline_) :
+             const Point3D& speed_, Tower& control_, int num_airline_, int fuel_) :
         GL::Displayable { pos_.x() + pos_.y() },
         type { type_ },
         flight_number { flight_number_ },
         pos { pos_ },
         speed { speed_ },
         control { control_ },
-        num_airline { num_airline_ }
+        num_airline { num_airline_ },
+        fuel { fuel_ }
     {
         speed.cap_length(max_speed());
     }
 
     const std::string& get_flight_num() const { return flight_number; }
     const int& get_num_airline() const { return num_airline; }
+    const int& get_fuel() const { return fuel; }
     float distance_to(const Point3D& p) const { return pos.distance_to(p); }
 
     void display() const override;
     bool move();
-
+    bool has_terminal() const;
+    bool is_circling() const;
+    bool is_low_on_fuel() const;
     friend class Tower;
 };
