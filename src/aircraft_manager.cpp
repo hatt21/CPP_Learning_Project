@@ -17,7 +17,16 @@ void AircraftManager::move()
               });
     aircrafts.erase(std::remove_if(aircrafts.begin(), aircrafts.end(),
                                    [](const auto& aircraft)
-                                   { return !aircraft->move() || aircraft->get_fuel() == 0; }),
+                                   {
+                                       try
+                                       {
+                                           return !aircraft->move();
+                                       } catch (AircraftCrash& err)
+                                       {
+                                           std::cerr << err.what() << std::endl;
+                                           return true;
+                                       }
+                                   }),
                     aircrafts.end());
 }
 
@@ -33,4 +42,17 @@ void AircraftManager::count_aircrafts(int num_airline) const
                                [num_airline](const auto& aircraft)
                                { return aircraft->get_num_airline() == num_airline; })
               << " plane(s)" << std::endl;
+}
+
+int AircraftManager::get_required_fuel() const
+{
+    return std::reduce(aircrafts.begin(), aircrafts.end(), 0,
+                       [](int sum, auto& aircraft)
+                       {
+                           if (aircraft->is_low_on_fuel() && aircraft->get_is_at_terminal())
+                           {
+                               return sum + (3000 - aircraft->get_fuel());
+                           }
+                           return sum;
+                       });
 }

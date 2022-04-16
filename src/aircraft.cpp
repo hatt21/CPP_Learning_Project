@@ -2,6 +2,7 @@
 
 #include "GL/opengl_interface.hpp"
 
+#include <algorithm>
 #include <cmath>
 
 void Aircraft::turn_to_waypoint()
@@ -149,7 +150,7 @@ bool Aircraft::move()
             }
             if (fuel == 0)
             {
-                std::cout << flight_number << " crashed!" << std::endl;
+                throw AircraftCrash { flight_number + " crashed because of out of gas" };
             }
         }
 
@@ -182,4 +183,16 @@ bool Aircraft::is_circling() const
 bool Aircraft::is_low_on_fuel() const
 {
     return fuel < 200;
+}
+
+void Aircraft::refill(int& fuel_stock)
+{
+    int missing_fuel = std::min(fuel_stock, 3000 - fuel);
+    if (missing_fuel > 0)
+    {
+        fuel_stock -= missing_fuel;
+        fuel += missing_fuel;
+        std::cout << "Flight number " << flight_number << " filled with " << missing_fuel << " L of fuel"
+                  << std::endl;
+    }
 }

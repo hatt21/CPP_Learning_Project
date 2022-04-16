@@ -75,3 +75,12 @@ WaypointQueue Tower::reserve_terminal(Aircraft& aircraft)
     }
     return vp.first;
 }
+
+void Tower::liberate_terminal(Aircraft& aircraft)
+{
+    auto it = reserved_terminals.find(&aircraft);
+    if (it != reserved_terminals.end())
+    {
+        reserved_terminals.erase(it);
+    }
+}

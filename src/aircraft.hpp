@@ -62,9 +62,13 @@ public:
         speed.cap_length(max_speed());
     }
 
+    ~Aircraft() { control.liberate_terminal(*this); }
+
     const std::string& get_flight_num() const { return flight_number; }
     const int& get_num_airline() const { return num_airline; }
     const int& get_fuel() const { return fuel; }
+    bool get_is_at_terminal() const { return is_at_terminal; }
+
     float distance_to(const Point3D& p) const { return pos.distance_to(p); }
 
     void display() const override;
@@ -72,5 +76,6 @@ public:
     bool has_terminal() const;
     bool is_circling() const;
     bool is_low_on_fuel() const;
+    void refill(int& fuel_stock);
     friend class Tower;
 };

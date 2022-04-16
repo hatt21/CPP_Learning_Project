@@ -34,8 +34,8 @@ private:
     void create_keystrokes() const;
     void display_help() const;
 
-    void init_airport();
     void init_aircraft_manager();
+    void init_airport();
 
 public:
     TowerSimulation(int argc, char** argv);

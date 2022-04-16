@@ -4,6 +4,7 @@
 
 #include <algorithm>
 #include <memory>
+#include <numeric>
 #include <vector>
 
 class AircraftManager : public GL::DynamicObject
@@ -16,4 +17,5 @@ public:
     void move() override;
     void add(std::unique_ptr<Aircraft> aircraft);
     void count_aircrafts(int num_airline) const;
+    int get_required_fuel() const;
 };
