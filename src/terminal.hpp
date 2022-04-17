@@ -41,17 +41,20 @@ public:
 
     void move() override
     {
-        if (in_use() && is_servicing() && !current_aircraft->is_low_on_fuel())
+        if (in_use() && is_servicing())
         {
-            ++service_progress;
+            service_progress++;
         }
     }
 
     void refill_aircraft_if_needed(int& fuel_stock)
     {
-        if (in_use() && current_aircraft->is_low_on_fuel())
+        assert(&fuel_stock);
+        if (is_servicing() && current_aircraft->is_low_on_fuel())
         {
             current_aircraft->refill(fuel_stock);
         }
     }
+
+    void liberate_terminal() { current_aircraft = nullptr; }
 };

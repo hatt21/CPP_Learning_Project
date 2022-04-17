@@ -21,8 +21,6 @@ Vous avez 2 choix possibles :
 
 Réfléchissez aux pour et contre de chacune de ces options.
 
-# Chaque option a un pour et un contre, pour la première option, créer une nouvelle classe permet de d'effectuer de la délégation et d'appliquer les bases de la programmation orientée objet, le seul point négatif est qu'il va falloir créer une nouvelle classe à chaque fois que l'on voudra ajouter un avion. Le point positif de la deuxième option est que on pourra appeler plus facilement cette méthode dans le programme mais le principe orienté objet n'est pas forcément respecté.
-
 Pour le restant de l'exercice, vous partirez sur le premier choix.
 
 ### B - Déterminer le propriétaire de chaque avion
@@ -31,17 +29,10 @@ Vous allez introduire une nouvelle liste de références sur les avions du progr
 Il serait donc bon de savoir qui est censé détruire les avions du programme, afin de déterminer comment vous allez pouvoir mettre à jour votre gestionnaire d'avions lorsque l'un d'entre eux disparaît.
 
 Répondez aux questions suivantes :
+
 1. Qui est responsable de détruire les avions du programme ? (si vous ne trouvez pas, faites/continuez la question 4 dans TASK_0)
-
-# C'est la fonction move() de la classe Aircraft qui retire les avions de la move_queue et la fonction timer() de opengl_interface.cpp qui les retire de la display_queue
-
 2. Quelles sont les listes qui contiennent une référence sur un avion au moment où il doit être détruit ?
-
-# move_queue et display_queue contiennent une référence sur un avion au moment où il doit être détruit.
-
 3. Comment fait-on pour supprimer la référence sur un avion qui va être détruit dans ces deux structures ?
-
-# Comme on parcout la liste move_queue avec un itérateur dans timer() on ne peut pas utiliser le destructeur de DynamicObject, il faut utiliser la fonction erase du unordered_set. En revanche pour supprimer un Displayable de display_queue, on utilise le destructeur de la classe Displayable.
 
 Pour simplifier le programme, l'`AircraftManager` aura l'ownership des avions, c'est-à-dire que c'est lui qui s'occupera de les faire disparaître du programme, et non plus la fonction `timer`. Il aura également la responsabilité de les faire bouger.
 

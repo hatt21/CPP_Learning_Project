@@ -16,13 +16,14 @@ void AircraftManager::move()
                   return a->get_fuel() < b->get_fuel();
               });
     aircrafts.erase(std::remove_if(aircrafts.begin(), aircrafts.end(),
-                                   [](const auto& aircraft)
+                                   [this](const auto& aircraft)
                                    {
                                        try
                                        {
-                                           return !aircraft->move();
+                                           return !(aircraft)->move();
                                        } catch (AircraftCrash& err)
                                        {
+                                           crash_counter++;
                                            std::cerr << err.what() << std::endl;
                                            return true;
                                        }
@@ -32,6 +33,7 @@ void AircraftManager::move()
 
 void AircraftManager::add(std::unique_ptr<Aircraft> aircraft)
 {
+    assert(aircraft);
     aircrafts.emplace_back(std::move(aircraft));
 }
 
@@ -46,13 +48,18 @@ void AircraftManager::count_aircrafts(int num_airline) const
 
 int AircraftManager::get_required_fuel() const
 {
-    return std::reduce(aircrafts.begin(), aircrafts.end(), 0,
-                       [](int sum, auto& aircraft)
-                       {
-                           if (aircraft->is_low_on_fuel() && aircraft->get_is_at_terminal())
+    return std::accumulate(aircrafts.begin(), aircrafts.end(), 0,
+                           [](int sum, auto& aircraft)
                            {
-                               return sum + (3000 - aircraft->get_fuel());
-                           }
-                           return sum;
-                       });
+                               if (aircraft->is_low_on_fuel() && aircraft->get_is_at_terminal())
+                               {
+                                   return sum + (3000 - aircraft->get_fuel());
+                               }
+                               return sum;
+                           });
+}
+
+void AircraftManager::print_crash_counter() const
+{
+    std::cout << crash_counter << " plane(s) crashed!" << std::endl;
 }

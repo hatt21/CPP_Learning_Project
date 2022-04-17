@@ -29,7 +29,7 @@ TowerSimulation::~TowerSimulation()
 void TowerSimulation::create_aircraft() const
 {
     assert(airport); // make sure the airport is initialized before creating aircraft
-    auto aircraft = aircraft_factory->create_random_aircraft(*airport);
+    auto aircraft = aircraft_factory->create_random_aircraft(airport);
     aircraft_manager->add(std::move(aircraft));
 }
 
@@ -41,8 +41,8 @@ void TowerSimulation::create_keystrokes() const
     GL::keystrokes.emplace('+', []() { GL::change_zoom(0.95f); });
     GL::keystrokes.emplace('-', []() { GL::change_zoom(1.05f); });
     GL::keystrokes.emplace('f', []() { GL::toggle_fullscreen(); });
-    GL::keystrokes.emplace('l', []() { GL::ticks_per_sec++; });
-    GL::keystrokes.emplace('m',
+    GL::keystrokes.emplace('k', []() { GL::ticks_per_sec++; });
+    GL::keystrokes.emplace('l',
                            []()
                            {
                                if (GL::ticks_per_sec > 1)
@@ -59,6 +59,7 @@ void TowerSimulation::create_keystrokes() const
     GL::keystrokes.emplace('5', [this]() { aircraft_manager->count_aircrafts(5); });
     GL::keystrokes.emplace('6', [this]() { aircraft_manager->count_aircrafts(6); });
     GL::keystrokes.emplace('7', [this]() { aircraft_manager->count_aircrafts(7); });
+    GL::keystrokes.emplace('m', [this]() { aircraft_manager->print_crash_counter(); });
 }
 
 void TowerSimulation::display_help() const

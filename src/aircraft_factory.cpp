@@ -1,8 +1,8 @@
 #include "aircraft_factory.hpp"
 
-std::unique_ptr<Aircraft> AircraftFactory::create_aircraft(Airport& airport, const AircraftType& type)
+std::unique_ptr<Aircraft> AircraftFactory::create_aircraft(Airport* airport, const AircraftType& type)
 {
-    assert(&airport); // make sure the airport is initialized before creating aircraft
+    assert(airport); // make sure the airport is initialized before creating aircraft
     assert(&type);
 
     int num_airline           = std::rand() % 8;
@@ -17,12 +17,12 @@ std::unique_ptr<Aircraft> AircraftFactory::create_aircraft(Airport& airport, con
     const Point3D start     = Point3D { std::sin(angle), std::cos(angle), 0 } * 3 + Point3D { 0, 0, 2 };
     const Point3D direction = (-start).normalize();
 
-    return std::make_unique<Aircraft>(type, flight_number, start, direction, *(&airport.get_tower()),
+    return std::make_unique<Aircraft>(type, flight_number, start, direction, airport->get_tower(),
                                       num_airline, fuel);
 }
 
-std::unique_ptr<Aircraft> AircraftFactory::create_random_aircraft(Airport& airport)
+std::unique_ptr<Aircraft> AircraftFactory::create_random_aircraft(Airport* airport)
 {
-    assert(&airport);
+    assert(airport);
     return create_aircraft(airport, *(aircraft_types[rand() % 3]));
 }

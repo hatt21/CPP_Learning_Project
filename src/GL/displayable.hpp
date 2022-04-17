@@ -20,7 +20,7 @@ public:
     Displayable(const float z_) : z { z_ } { display_queue.emplace_back(this); }
     virtual ~Displayable()
     {
-        const auto it = std::find(display_queue.begin(), display_queue.end(), this);
+        auto it = std::find(display_queue.begin(), display_queue.end(), this);
         if (it != display_queue.end())
         {
             display_queue.erase(it);

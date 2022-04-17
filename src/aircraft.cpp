@@ -77,7 +77,7 @@ void Aircraft::operate_landing_gear()
     }
 }
 
-void Aircraft::add_waypoint(const Waypoint& wp, const bool front)
+template <bool front> void Aircraft::add_waypoint(const Waypoint& wp)
 {
     if (front)
     {
@@ -97,7 +97,10 @@ bool Aircraft::move()
         {
             return false;
         }
-        waypoints = control.get_instructions(*this);
+        for (const auto& wp : control.get_instructions(*this))
+        {
+            add_waypoint<false>(wp);
+        }
     }
 
     if (!is_at_terminal)
@@ -105,15 +108,15 @@ bool Aircraft::move()
         turn_to_waypoint();
         // move in the direction of the current speed
         pos += speed;
-        if (is_circling() && !has_landed)
+
+        if (is_circling())
         {
             auto waypoint = control.reserve_terminal(*this);
             if (!waypoint.empty())
             {
-                waypoints.swap(waypoint);
+                waypoints = std::move(waypoint);
             }
         }
-
         // if we are close to our next waypoint, stike if off the list
         if (!waypoints.empty() && distance_to(waypoints.front()) < DISTANCE_THRESHOLD)
         {
@@ -144,10 +147,7 @@ bool Aircraft::move()
             {
                 pos.z() -= SINK_FACTOR * (SPEED_THRESHOLD - speed_len);
             }
-            if (fuel > 0)
-            {
-                fuel--;
-            }
+            fuel--;
             if (fuel == 0)
             {
                 throw AircraftCrash { flight_number + " crashed because of out of gas" };
@@ -173,11 +173,12 @@ bool Aircraft::has_terminal() const
         return true;
     }
     return false;
+    return !waypoints.empty() && waypoints.back().is_at_terminal();
 }
 
 bool Aircraft::is_circling() const
 {
-    return !has_terminal();
+    return !has_landed && !has_terminal();
 }
 
 bool Aircraft::is_low_on_fuel() const
@@ -188,10 +189,10 @@ bool Aircraft::is_low_on_fuel() const
 void Aircraft::refill(int& fuel_stock)
 {
     int missing_fuel = std::min(fuel_stock, 3000 - fuel);
+    fuel_stock -= missing_fuel;
+    fuel += missing_fuel;
     if (missing_fuel > 0)
     {
-        fuel_stock -= missing_fuel;
-        fuel += missing_fuel;
         std::cout << "Flight number " << flight_number << " filled with " << missing_fuel << " L of fuel"
                   << std::endl;
     }

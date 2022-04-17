@@ -77,10 +77,10 @@ public:
         if (next_refill_time == 0)
         {
             std::cout << ordered_fuel << " L received" << std::endl;
-            std::cout << fuel_stock << " L in stock" << std::endl;
             fuel_stock += ordered_fuel;
             ordered_fuel     = std::min(aircraft_manager.get_required_fuel(), 5000);
             next_refill_time = 100;
+            std::cout << fuel_stock << " L in stock" << std::endl;
             std::cout << ordered_fuel << " L ordered" << std::endl;
         }
         else
